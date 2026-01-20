@@ -211,7 +211,7 @@ int inEVENT_Responder(int inKey)
 #endif
 	
         if (inRetVal == VS_SUCCESS)
-        {
+        {       
         	pobTran.inFunctionID = srEventMenuItem.inCode;
         	pobTran.inRunOperationID = srEventMenuItem.inRunOperationID;
         	pobTran.inRunTRTID = srEventMenuItem.inRunTRTID;
@@ -255,7 +255,11 @@ int inEVENT_Responder(int inKey)
 		{
 			pobTran.srBRec.uszNoSignatureBit = VS_TRUE;
 		}
-		
+            
+                /*
+                 * srEventMenuItem.inRunOperationID 紀錄 OPERATION_TABLE 對應的Table
+                 * 並執行這個Table對應的Function
+                 */
 		inRetVal = inFLOW_RunOperation(&pobTran, srEventMenuItem.inRunOperationID);
 		
 		if (inRetVal != VS_SUCCESS)

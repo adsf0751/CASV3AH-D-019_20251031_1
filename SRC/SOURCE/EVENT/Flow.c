@@ -1410,6 +1410,7 @@ int inFLOW_RunFunction(TRANSACTION_OBJECT *pobTran, int inFuncID)
                 {
                         return (VS_ERROR);
                 }
+                //跑每個enum所對應的function
                 else if (FunctionTable[i].inFuncId == inFuncID)
                 {
                         inRetVal = FunctionTable[i].inFunctionPoint(pobTran);
@@ -1429,7 +1430,7 @@ int inFLOW_RunOperation(TRANSACTION_OBJECT *pobTran, int inOPTCode)
         for (i = 0 ;; i ++)
         {
                 if (OPERATION_TABLE[i].inOPTCode == inOPTCode)
-                {
+                {       //inOPTID = EDC_BOOTING_TABLE;
                         inOPTID = OPERATION_TABLE[i].inOPTID;
                         break;
                 }
@@ -1446,7 +1447,7 @@ int inFLOW_RunOperation(TRANSACTION_OBJECT *pobTran, int inOPTCode)
         {
                 if (inOPTID[i] == _FLOW_NULL_)
                         break;
-
+                //inOPTID 是一個table，透過裡面的enum值去做對應的function
                 inRetVal = inFLOW_RunFunction(pobTran, inOPTID[i]);
 
 		if (inRetVal == VS_LAST_PAGE)
