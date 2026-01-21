@@ -160,12 +160,12 @@ int inDisTouch_Read_TouchFile(int *inTouch_Handle)
 	int	inRead_Temp_Length = 0;	/* 每次讀的長度 */
         int	inRead_Length = 0;	/* 讀出的總長度 */
 	char	szDebugMsg[100 + 1];
-	
+	//不懂，ginEventNum全域預設為零
 	memset(gsrEvent, 0x00, sizeof(DISTOUCH_EVENT) * ginEventNum);
 	ginEventNum = 0;
-
+        
 	while (inRead_Temp_Length != -1 && ginEventNum < _DisTouch_Event_Num_)
-	{
+	{       /*因為read參數三原因，所以一次只讀一個事件?*/
 		inRead_Temp_Length = read(*inTouch_Handle, &gsrEvent[ginEventNum], sizeof(DISTOUCH_EVENT));
 
 		if (inRead_Temp_Length != -1)
@@ -3955,7 +3955,7 @@ int inDisTouch_TouchSensor_Click_Slide(int inTouchSensorFunc)
 	
 	if (ginTouchEnable != VS_TRUE)
 		return (_DisTouch_No_Event_);
-	
+	/*讀取"輸入事件"設備檔*/
 	/* 開啟觸控檔 */
 	if (inDisTouch_Open_TouchFile(&ginTouch_Handle) != VS_SUCCESS)
 		return (_DisTouch_No_Event_);
@@ -3974,13 +3974,20 @@ int inDisTouch_TouchSensor_Click_Slide(int inTouchSensorFunc)
 //	{
 //		inDISP_BackLight_Set(_BACK_LIGHT_LCD_, 1);
 //	}
-	
+        /*
+         * 點擊 = PenDown + PenUp
+         * 拖曳 = PenDown + 多個Move + PenUp
+         * PenDown和PenUp的事件類型 = EV_KEY ，事件屬性 = BTN_TOUCH ，
+         * 差別在事件屬性值，Value = 1是按下，0是放開。
+         */
+        
+	/*照理說ginEventNum 應該來自於 inDisTouch_Read_TouchFile? 但如何關聯的?*/
 	/* 開始分析讀出的事件，判斷方法:看到PenDown事件紀錄pen_down座標(座標不為0)，看到PenUp事件分析X軸距離，絕對值大於距離判定成功 */
 	for (inEventCount = 0; inEventCount < ginEventNum; inEventCount++)
 	{
 		/* 判斷是否經過某個點 */
 		if (inTouchEvent == _DisTouch_No_Event_)
-		{
+		{   //_Touch_NEWUI_IDLE_ == inTouchSensorFunc
 			inTouchEvent = inDisTouch_IsSigned(&gsrDisTouchObj, inTouchSensorFunc);
 			if (inTouchEvent != _DisTouch_No_Event_)
 			{
@@ -4211,7 +4218,7 @@ int inDisTouch_IsSlidePage(DISTOUCH_OBJECT *srDisTouchObj, int inTouchSensorFunc
 		{
 			/* 判斷是拖曳就不判斷點擊 */
 			gsrDisTouchObj.uszClicking = VS_FALSE;
-			
+			/*不懂，為何這裡還是判別水平，而非垂直*/
 			if (srDisTouchObj->inXpen_down > srDisTouchObj->inX_Temp)
 			{
 				if (ginDebug == VS_TRUE)

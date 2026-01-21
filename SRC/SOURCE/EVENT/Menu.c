@@ -464,6 +464,7 @@ int inMENU_New_UI()
                         ginIdleDispFlag  = VS_FALSE; 
                 }
 #ifdef _TOUCH_CAPBILITY_
+                /*不懂，獲得inFunc後並沒看到使用的地方*/
                 /* IDLE觸控畫面 */
                 inFunc = inDISP_DisplayIdleMessage_NewUI(); /* 回傳IDLE畫面的按鈕選擇 */
 
@@ -1356,6 +1357,7 @@ int inMENU_000_MenuFlow_NEWUI(EventMenuItem *srEventMenuItem)
 					inRetVal = inMENU_TMS_PROCESS_EFFECTIVE(srEventMenuItem);
 					break;
 				case _BOOTING_EVENT_:
+                                    /*srEventMenuItem->inRunOperationID = _OPERATION_EDC_BOOTING_*/
 					inRetVal = inMENU_EDC_BOOTING(srEventMenuItem);
 					break;
 				case _POWER_MANAGEMENT_EVENT_:
@@ -1772,6 +1774,7 @@ int inMENU_MenuKeyInAndGetAmount(EventMenuItem *srEventMenuItem)
         char	szCTLSEnable[2 + 1];
         
         memset(szCTLSEnable, 0x00, sizeof(szCTLSEnable));
+        //根據CFGT.dat檔案，預設srCFGTRec.szContactlessEnable[0] = 'Y'
 	inGetContactlessEnable(szCTLSEnable);
         
         if (!memcmp(&szCTLSEnable[0], "Y", 1) && srEventMenuItem->inEventCode == '0')
