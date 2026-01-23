@@ -5110,7 +5110,7 @@ Function        :inCREDIT_Func_Get_OPT_ProductCode
 Date&Time       :2017/4/19 下午 3:00
 Describe        :
 */
-/* 根據端末機對應之按鍵(Hot Key) 秀出產品代碼及產品說明 */
+/* 如果沒有下產品代碼檔，直接return，如果有下，根據端末機對應之按鍵(Hot Key) 秀出產品代碼及產品說明 */
 int inCREDIT_Func_Get_OPT_ProductCode(TRANSACTION_OBJECT *pobTran)
 {
 	int	i;
