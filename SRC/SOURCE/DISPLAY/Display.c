@@ -901,6 +901,7 @@ Function        :inDISP_ChineseFont_Point_Color_By_Graphic_Mode
 Date&Time       :2018/4/11 上午 9:20
 Describe        :如果用Text Mode會有中文字和英文字對不齊的問題，這時候可以改用Graphic_Mode
 */
+//("1", _FONTSIZE_16X22_, _COLOR_BLACK_, _COLOR_WHITE_, _Distouch_KEY_IN_MENU_LINE_3_TO_8_3X4_Touch_KEY_1_BUTTON_Xm_, _Distouch_KEY_IN_MENU_LINE_3_TO_8_3X4_Touch_KEY_1_BUTTON_Y1_, VS_FALSE);
 int inDISP_ChineseFont_Point_Color_By_Graphic_Mode(char *szMessage, int inFontSize, int inForeColor, int inBackColor, int inX, int inY, unsigned char uszReverse)
 {
 	int		inY_Modify;
@@ -3892,6 +3893,7 @@ int inDISP_Enter8x16_GetAmount(DISPLAY_OBJECT  *srDispObj)
 
                 /* 一律先把畫面清掉後再顯示輸入訊息 */
                 if (srDispObj->inX != 0)
+                        //不懂
 			inDISP_Clear_Area(srDispObj->inX, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);
 		else
 			inDISP_Clear_Area(1, srDispObj->inY, 16, srDispObj->inY, srDispObj->inFoneSize);

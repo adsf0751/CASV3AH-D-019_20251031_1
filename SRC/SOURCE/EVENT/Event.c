@@ -476,8 +476,8 @@ int inEVENT_Run_Normal_TRT(TRANSACTION_OBJECT *pobTran)
 		if (inLoadHDPTRec(pobTran->srBRec.inHDTIndex) == VS_SUCCESS)
 		{
 			/* 在這裡決定跑那一個host的TRT */
-			inGetTRTFileName(szTRTFileName);
-
+			inGetTRTFileName(szTRTFileName);//szTRTFileName = CREDITTRT
+                        
 			/* ResetTitle */
 			inFunc_ResetTitle(pobTran);
 

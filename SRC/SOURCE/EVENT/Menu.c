@@ -489,7 +489,7 @@ int inMENU_New_UI()
 			continue;
 		}
 #endif
-
+                //szCTLSEnable[0]預設為'N'
                 if (memcmp(&szCTLSEnable[0], "Y", 1) != 0 || guszCTLSInitiOK != VS_TRUE)
                 {
                         /* 未開感應 */
