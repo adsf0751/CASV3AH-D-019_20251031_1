@@ -27099,7 +27099,7 @@ int inFunc_DuplicateSave(TRANSACTION_OBJECT* pobTran)
 	}
 	
 	memset(szSplitTxnCheckEnable, 0x00, sizeof(szSplitTxnCheckEnable));
-	inGetSplitTransCheckEnable(szSplitTxnCheckEnable);
+	inGetSplitTransCheckEnable(szSplitTxnCheckEnable);//'N'
 	if (memcmp(szSplitTxnCheckEnable, "Y", strlen("Y")) != 0)
         {
                 vdUtility_SYSFIN_LogMessage(AT, "inFunc_DuplicateSave Not_Enable END!");
@@ -30969,7 +30969,8 @@ int inFunc_Check_Batch_limit(TRANSACTION_OBJECT *pobTran)
         inGetCustomIndicator(szCustomerIndicator);
         
         if (memcmp(szCustomerIndicator, _CUSTOMER_INDICATOR_076_8_DIGITS_, _CUSTOMER_INDICATOR_SIZE_))
-	{
+	
+        i{
 		inRetVal = VS_SUCCESS;
                 vdUtility_SYSFIN_LogMessage(AT, "inFunc_Check_Batch_limit Not cus_076 END!");
                 return (inRetVal);
@@ -31028,7 +31029,7 @@ int inFunc_Check_Total_Trade(TRANSACTION_OBJECT *pobTran)
                 llNSum = 0;
         }   
         else
-        {    
+       {    
                 memset(&TempTran, 0x00, sizeof(TempTran));
                 TempTran.srBRec.inHDTIndex = inHostIndex;
 
@@ -31038,6 +31039,7 @@ int inFunc_Check_Total_Trade(TRANSACTION_OBJECT *pobTran)
                 inSetHostLabel(_HOST_NAME_CREDIT_NCCC_);
                 
                 memset(&srAccumRec, 0x00, sizeof(ACCUM_TOTAL_REC));
+                //這隻程式看起來是組一個檔名，讀檔案取資料出來(不建檔)。
                 inACCUM_GetRecord(&TempTran, &srAccumRec);
                 
                 inSetHostLabel(szHostLabel);
@@ -31074,7 +31076,10 @@ int inFunc_Check_Total_Trade(TRANSACTION_OBJECT *pobTran)
                 inLogPrintf(AT, "[Check_Batch_limit]");
                 inLogPrintf(AT, "%01lld + %01lld = %01lld", llNSum, llDSum, llSum);
         }
-        
+        /*
+            看起來是一筆交易是一個BATCH，IISUM是之前所做得所有NCCC/DCC交易總金額，
+            以下針對交易類型，去加總這次的交易金額(pobTran->srBRec.lnTxnAmount)
+         */
         if (pobTran->inTransactionCode == _VOID_)
         {    
 		if (pobTran->srBRec.inOrgCode == _REFUND_           || pobTran->srBRec.inOrgCode == _INST_REFUND_   || 

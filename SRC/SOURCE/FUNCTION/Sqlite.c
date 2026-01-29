@@ -1063,7 +1063,7 @@ int inSqlite_Table_Link_BRec(TRANSACTION_OBJECT *pobTran, SQLITE_ALL_TABLE *srAl
 	srLink.psrInt64t = TABLE_BATCH_INT64T;
 	srLink.psrChar = TABLE_BATCH_CHAR;
 	srLink.psrText = NULL;
-	
+	//依據srLink的sqlite Table mapping到srAll上面
 	inSqlite_Table_Link(srAll, inLinkState, &srLink);
 	
 	if (ginDebug == VS_TRUE)
@@ -3463,15 +3463,15 @@ int inSqlite_Update_ByInvNum_TranState(TRANSACTION_OBJECT *pobTran, char* szTabl
 	
 	memset(&srAll, 0x00, sizeof(SQLITE_ALL_TABLE));
 	srAll.inCharNum = 1;
-	strcpy(srAll.srChar[0].szTag, szTag);
-	srAll.srChar[0].pCharVariable = szTagValue;
-	srAll.srChar[0].inTagValueLen = strlen(srAll.srChar[0].pCharVariable);
+	strcpy(srAll.srChar[0].szTag, szTag);//"uszUpdated"
+	srAll.srChar[0].pCharVariable = szTagValue;//'1'
+	srAll.srChar[0].inTagValueLen = strlen(srAll.srChar[0].pCharVariable);//1
 	
 	/* 算要配置多少記憶體 */
 	memset(&srSQLCal, 0x00, sizeof(SQLITE_SQL_CALCULATE_TABLE));
-	srSQLCal.pSqlPrefix = szSqlPrefix;
-	srSQLCal.pSqlSuffix = szSqlSuffix;
-	srSQLCal.pSqlSuffix2 = szSqlSuffix2;
+	srSQLCal.pSqlPrefix = szSqlPrefix;//"UPDATE tableName"
+	srSQLCal.pSqlSuffix = szSqlSuffix;//"SET"
+	srSQLCal.pSqlSuffix2 = szSqlSuffix2;//" WHERE inTableID IN (SELECT inTableID FROM %s WHERE lnOrgInvNum = %d ORDER BY inTableID DESC LIMIT 1)"
 	
 	inSqlite_Calculate_Update_SQLLength(&srSQLCal, &srAll, &inSqlLength);
 	
@@ -5148,6 +5148,7 @@ int inSqlite_Check_Table_Exist_Flow(TRANSACTION_OBJECT *pobTran, int inTableType
 		case _TN_EMV_TABLE_:
 		case _TN_BATCH_TABLE_TICKET_:
 		case _TN_BATCH_TABLE_TRUST_:
+                        //根據query是否有結果作為判斷table是否存在
 			inRetVal = inSqlite_Check_Table_Exist(gszTranDBPath, szTableName);
 			break;
 		default :
