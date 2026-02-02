@@ -7451,7 +7451,7 @@ int inFunc_PrintReceipt_ByBuffer_Flow(TRANSACTION_OBJECT *pobTran)
 				/* (6)	ESC功能僅包含中心NCCC Host(含HappyGo混合交易)及DCC Host之交易(不含大來卡) */
 				/* ESC開關 */
 				memset(szESCMode, 0x00, sizeof(szESCMode));
-				inGetESCMode(szESCMode);
+				inGetESCMode(szESCMode);//'N'
 
 				/* 沒ESC的狀況，直接印紙本，不須另外判斷 */
 				if (szESCMode[0] != 'Y')
@@ -7849,7 +7849,7 @@ int inFunc_NCCC_PrintReceipt_ByBuffer(TRANSACTION_OBJECT *pobTran)
 	inFunc_ResetTitle(pobTran);
 	
 	memset(szPrtMode, 0x00, sizeof(szPrtMode));
-	inGetPrtMode(szPrtMode);
+	inGetPrtMode(szPrtMode);//'2'
 	
 	memset(szCustomerIndicator, 0x00, sizeof(szCustomerIndicator));
 	inGetCustomIndicator(szCustomerIndicator);
@@ -7861,6 +7861,7 @@ int inFunc_NCCC_PrintReceipt_ByBuffer(TRANSACTION_OBJECT *pobTran)
 	{
 		inDISP_BEEP(1, 0);
 	}
+        // 因為szPrtMode =='2'，所以程式return success
         else if (inNCCC_Func_Check_Print_Mode_4_No_Merchant_For_Txn(pobTran) == VS_TRUE)
         {
                 /* TMS參數Print_Mode 4=兩聯免簽不印商店聯 */
@@ -10110,7 +10111,7 @@ int inFunc_GetTransType(TRANSACTION_OBJECT *pobTran, char *szPrintBuf1, char* sz
 	inGetCustomIndicator(szCustomerIndicator);
 	
 	memset(szShort_Receipt_Mode, 0x00, sizeof(szShort_Receipt_Mode));
-	inGetShort_Receipt_Mode(szShort_Receipt_Mode);
+	inGetShort_Receipt_Mode(szShort_Receipt_Mode);//'N'
 	
 	if (!memcmp(szCustomerIndicator, _CUSTOMER_INDICATOR_041_CASH_, _CUSTOMER_INDICATOR_SIZE_))
 	{
