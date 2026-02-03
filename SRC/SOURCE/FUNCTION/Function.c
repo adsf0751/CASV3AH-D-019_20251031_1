@@ -10585,7 +10585,7 @@ int inFunc_GetTransType(TRANSACTION_OBJECT *pobTran, char *szPrintBuf1, char* sz
 						case _REFUND_ :
 						case _CUP_REFUND_ :
 							strcpy(szPrintBuf1, "12 取消-退貨 ");
-							strcpy(szPrintBuf2, "VOID REFUND");
+						_VOID_	strcpy(szPrintBuf2, "VOID REFUND");
 							break;
 						case _CUP_MAIL_ORDER_REFUND_ :
 							strcpy(szPrintBuf1, "12 取消-退貨-郵購");
@@ -18265,11 +18265,11 @@ int inFunc_CheckCustomizePassword(int inPasswordLevel, int inCode)
 			case _CUP_PRE_COMP_VOID_ :
 			case _FISC_VOID_ :
                         case _TRUST_VOID_:
-                                inGetVoidPwdEnable(szPWDEnable);
+                                inGetVoidPwdEnable(szPWDEnable);/* 開啟取消密碼 */
                                 
                                 if (!memcmp(szPWDEnable, "Y", 1))
                                 {
-                                        inGetVoidPwd(szTerminalPwd);
+                                        inGetVoidPwd(szTerminalPwd);/* 取消密碼 */
                                         break;
                                 }
                                 else
@@ -19306,10 +19306,10 @@ int inFunc_GetHostNum_NewUI(TRANSACTION_OBJECT *pobTran)
 	
 	/* 【需求單 - 108128】	單機重印前筆簽單流程新增畫面 by Russell 2019/8/15 上午 11:40 */
 	if (pobTran->inRunOperationID == _OPERATION_REPRINT_)
-	{
+	/*暫時跳過*/{
 		/* 上筆簽單Host */
 		inLastHDTIndex = -1;
-		inRetVal2 = inFunc_Load_Last_Txn_Host(&inLastHDTIndex);
+		inRetVal2 = inFunc_Load_Last_Txn_Host(&inLastHDTIndex); 
 
 		if (inRetVal2 != VS_SUCCESS || 
 		    inLastHDTIndex < 0)
@@ -19465,7 +19465,7 @@ int inFunc_GetHostNum_NewUI(TRANSACTION_OBJECT *pobTran)
 				inDISP_PutGraphic(_CHOOSE_HOST_6_, 0,_COORDINATE_Y_LINE_8_4_);
 				break;
 		}
-		
+		/* 這邊是類似原先有display graphic 三個藍框，然後把主機名填上去?*/
                 /*有開多個Host */
                 inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine1, _FONTSIZE_16X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_CHOOSE_HOST_1_, _COORDINATE_Y_LINE_16_9_, VS_FALSE);
 		inDISP_ChineseFont_Point_Color_By_Graphic_Mode(szLine1_2, _FONTSIZE_16X22_, _COLOR_WHITE_, _COLOR_BUTTON_, _COORDINATE_X_CHOOSE_HOST_1_, _COORDINATE_Y_LINE_16_10_, VS_FALSE);
@@ -30970,13 +30970,12 @@ int inFunc_Check_Batch_limit(TRANSACTION_OBJECT *pobTran)
         inGetCustomIndicator(szCustomerIndicator);
         
         if (memcmp(szCustomerIndicator, _CUSTOMER_INDICATOR_076_8_DIGITS_, _CUSTOMER_INDICATOR_SIZE_))
-	
-        i{
+        {
 		inRetVal = VS_SUCCESS;
                 vdUtility_SYSFIN_LogMessage(AT, "inFunc_Check_Batch_limit Not cus_076 END!");
                 return (inRetVal);
 	}
-        
+        /*判斷金額上限*/
         // 單筆檢核
         inRetVal = inFunc_Check_Single_Trade(pobTran);
         
@@ -30994,7 +30993,7 @@ int inFunc_Check_Batch_limit(TRANSACTION_OBJECT *pobTran)
             !memcmp(szHostLabel, _HOST_NAME_DCC_, strlen(_HOST_NAME_DCC_))  ||
             !memcmp(szHostLabel, _HOST_NAME_HG_, strlen(_HOST_NAME_HG_))    ||
             !memcmp(szHostLabel, _HOST_NAME_TRUST_, strlen(_HOST_NAME_TRUST_)))
-        {
+        {      /*如果交易類型是Void 且BatchRecord的交易類型為Sale，總金額扣除這筆金額 */
                inRetVal = inFunc_Check_Total_Trade(pobTran); 
         }
         

@@ -956,7 +956,12 @@ int inCARD_LoadGetCDTIndex(TRANSACTION_OBJECT *pobTran)
         }
 
         do
-        {
+        {  
+            /*
+             *  從CDT.dat找到"對應的主機索引" mapping HDT.dat的"主機索引"，
+             *  記錄下mapping成功的HDT.dat的那筆record的index(index =N ，第N筆record成功mapping到主機索引)，
+             *  最後判斷找到的那筆主機功能是否開啟
+             */
                 /* 按順序load每一個卡別的卡號範圍 */
                 if (inLoadCDTRec(i) < 0)
                 {
@@ -1087,7 +1092,7 @@ int inCARD_LoadGetCDTIndex(TRANSACTION_OBJECT *pobTran)
 			}
                 }
 		else
-		{
+		{       /* 可以說是 透過卡號範圍去找要對應的主機? */
 			/* 判斷卡號 位在哪個Bin Range(如果卡號大於該卡別最低卡號，而且小於最高卡號) */
 			if (strncmp(pobTran->srBRec.szPAN, szLowBinRange, min(inPANLen, inLowBinLen)) >= 0	&&
 			    strncmp(pobTran->srBRec.szPAN, szHighBinRange, min(inPANLen, inHighBinLen)) <= 0)

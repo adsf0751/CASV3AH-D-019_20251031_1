@@ -4868,9 +4868,11 @@ int inNCCC_Func_VOID_Check(TRANSACTION_OBJECT *pobTran)
 	vdUtility_SYSFIN_LogMessage(AT, "inNCCC_Func_VOID_Check START!");
 
 	memset(szNCCCFESMode, 0x00, sizeof(szNCCCFESMode));
+        /* NCCC FES 模式 , 01 = 集訓機  02 = R-FES 03 = M-FES 04 = MPAS 05 = ATS */
 	inGetNCCCFESMode(szNCCCFESMode);
 	
 	memset(szCFESMode, 0x00, sizeof(szCFESMode));
+        /* 是否為雲端MFES，預設值=N。Y=雲端MFES。 N=一般MFES。*/
 	inGetCloud_MFES(szCFESMode);
             
         memset(szTRTFileName, 0x00, sizeof(szTRTFileName));
@@ -4884,7 +4886,7 @@ int inNCCC_Func_VOID_Check(TRANSACTION_OBJECT *pobTran)
         {
                 inTimeout = _CUSTOMER_105_MCDONALDS_DISPLAY_TIMEOUT_;
         }
-		
+/* 這邊的pobTran->srBRec.uszVOIDBit == VS_TRUE 很可能是之前已經做過一次取消所保留的設定Bit On */
         if (pobTran->srBRec.uszVOIDBit == VS_TRUE)
         {
                 /* 顯示此交易已取消 */
@@ -8320,6 +8322,7 @@ int inNCCC_Func_Get_Transaction_No_From_PAN(TRANSACTION_OBJECT *pobTran)
 
 		/* PrintTxNoCheckNo開關判斷 */
 		memset(szFuncEnable, 0x00, sizeof(szFuncEnable));
+                /* N = 該卡別交易簽單，不列印交易編號、列印檢查碼及不遮掩商店存根聯之卡號 */
 		inGetPrint_Tx_No_Check_No(szFuncEnable);
 		if (memcmp(szFuncEnable, "Y", strlen("Y")) == 0)
 		{
@@ -28650,7 +28653,7 @@ int inNCCC_Func_Check_NoSignature_Final(TRANSACTION_OBJECT *pobTran)
 			pobTran->srBRec.uszNoSignatureBit = VS_FALSE;
 		}
 	}
-        
+        //update更新 資料庫 uszNoSignatureBit的值
         inBATCH_Update_NoSignature_By_Sqlite(pobTran);
 	
 	return (VS_SUCCESS);

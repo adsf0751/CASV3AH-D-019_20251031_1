@@ -1844,13 +1844,13 @@ int inBATCH_GetInvoiceNumber(TRANSACTION_OBJECT *pobTran)
 		srDispObj.inOutputLen = 0;
 	
                 inRetVal = inDISP_Enter8x16_Character_Mask_And_DisTouch(&srDispObj);
-
+                /* inRetVal = 按鍵返回值(VS_TIMEOUT/VS_USER_CANCEL)或是輸入的長度 */
                 if (inRetVal == VS_TIMEOUT || inRetVal == VS_USER_CANCEL)
                 {
                         return (VS_ERROR);
                 }
                 else if (inRetVal == 0)
-                {
+                {       /*未輸入，直接按Enter，output長度為零*/
                         pobTran->srBRec.lnOrgInvNum = _BATCH_LAST_RECORD_;
                         break;
                 }
@@ -1861,14 +1861,14 @@ int inBATCH_GetInvoiceNumber(TRANSACTION_OBJECT *pobTran)
                                 if ((srDispObj.szOutput[i] >= '0') && (srDispObj.szOutput[i] <= '9'))
                                         continue;
                                 else
-                                {
+                                {       /*輸入包含非數字，清除這筆資料，往下會做判斷，重新輸入*/
                                         memset(srDispObj.szOutput, 0x00, sizeof(srDispObj.szOutput));
                                         break;
                                 }
                         }
 
                         if (strlen(srDispObj.szOutput) == 0)
-                                continue;
+                                continue;   
 
                         pobTran->srBRec.lnOrgInvNum = atol(srDispObj.szOutput);
 
@@ -7391,6 +7391,7 @@ int inBATCH_FuncUserChoice_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 		{
 			memset(&pobDataTran, 0x00, sizeof(TRANSACTION_OBJECT));
 			memcpy(&pobDataTran, pobTran, sizeof(TRANSACTION_OBJECT));
+                        /* 讀出pobTran->srBRec.lnOrgInvNum的紀錄 */
 			inTempRetVal = inBATCH_GetTransRecord_By_Sqlite(&pobDataTran);
 			if (inTempRetVal == VS_SUCCESS)
 			{
@@ -8565,6 +8566,7 @@ int inBATCH_Update_Sign_Status_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 	}
 	
 	inFunc_ComposeFileName(pobTran, szTableName, "", 6);
+        
 	inSqlite_Update_ByInvNum_SignState(pobTran, gszTranDBPath, szTableName, pobTran->srBRec.lnOrgInvNum);
 	
 	if (ginDebug == VS_TRUE)

@@ -520,7 +520,7 @@ int inCTLS_SendReadyForSale_Flow(TRANSACTION_OBJECT *pobTran)
         }
         
 	memset(szCTLSMode, 0x00, sizeof(szCTLSMode));
-	inGetContactlessReaderMode(szCTLSMode);'0'
+	inGetContactlessReaderMode(szCTLSMode);//'0'
 	if (memcmp(szCTLSMode, _CTLS_MODE_0_NO_, strlen(_CTLS_MODE_0_NO_)) == 0)
 	{
 		if (ginDebug == VS_TRUE)
@@ -841,6 +841,7 @@ unsigned long ulCTLS_CheckResponseCode_SALE(TRANSACTION_OBJECT *pobTran)
 		/* d_EMVCL_RC_DATA 和 d_EMVCL_NON_EMV_CARD 為有收到資料的狀況 */
                 case d_EMVCL_RC_DATA :
                         pobTran->srBRec.uszContactlessBit = VS_TRUE;
+    /*inCTLS_UnPackReadyForSale_Flow 在UnPack會透過schemeID 設定pobTran->srBRec.uszCUPTransBit BitOn*/
                         if (inCTLS_UnPackReadyForSale_Flow(pobTran) != VS_SUCCESS)
 			{
 				ulRetVal = d_EMVCL_RC_FAILURE;
