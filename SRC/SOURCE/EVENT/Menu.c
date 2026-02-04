@@ -8219,6 +8219,7 @@ int inMENU_FUNCTION_NEWUI_PAGE1(EventMenuItem *srEventMenuItem)
         }
         
 	/* 檢查功能開關，並顯示反白的圖 */
+        /* 檢查MENU_CHECK_TABLE 的inCheckFunc判斷功能是否有開，針對沒開的功能，顯示反白的圖 */
 	inMENU_CHECK_FUNCTION_ENABLE_DISPLAY(srMenuChekDisplay);
 
 	/* 設定Timeout */
@@ -8891,7 +8892,7 @@ int inMENU_NEWUI_TRANSACTION_MENU(EventMenuItem *srEventMenuItem)
 	
 	memset(szCustomerIndicator, 0x00 , sizeof(szCustomerIndicator));
 	inGetCustomIndicator(szCustomerIndicator);
-	/*TMS下載失敗， return VS_FUNC_CLOSE_ERR*/
+	/* TMS下載失敗， return VS_FUNC_CLOSE_ERR */
 	if (inMENU_Check_Transaction_Enable(0) != VS_SUCCESS)
 	{
 		inRetVal = VS_FUNC_CLOSE_ERR;
