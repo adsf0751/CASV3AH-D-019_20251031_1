@@ -10771,6 +10771,7 @@ int inFunc_UpdateInvNum(TRANSACTION_OBJECT *pobTran)
 		inFunc_RecordTime_Append("%d %s", __LINE__, __FUNCTION__);
 	}
 	
+        /* 可以看成pobTran->srBRec.inHDTIndex 在資料庫是否有這筆資料? */
         if (inLoadHDPTRec(pobTran->srBRec.inHDTIndex) == VS_ERROR)
         {
                 vdUtility_SYSFIN_LogMessage(AT, "inFunc_UpdateInvNum inLoadHDPTRec_failed(%d)", pobTran->srBRec.inHDTIndex);
@@ -10877,7 +10878,7 @@ int inFunc_UpdateInvNum(TRANSACTION_OBJECT *pobTran)
 	    pobTran->srBRec.inHDTIndex == inDCC_HostIndex	||
 	    pobTran->srBRec.inHDTIndex == inHG_HostIndex	||
 	    pobTran->srBRec.uszHappyGoMulti == VS_TRUE)
-	{
+	{       /*找出每個主機的InvoiceNum，找到最大的值，最後同步寫回每個主機*/
 		if (inNCCC_Func_Sync_InvoiceNumber(pobTran) != VS_SUCCESS)
 		{
                         vdUtility_SYSFIN_LogMessage(AT, "inFunc_UpdateInvNum failed inNCCC_Func_Sync_InvoiceNumber");
@@ -15669,7 +15670,7 @@ int inFunc_ComposeFileName(TRANSACTION_OBJECT *pobTran, char *szFileName, char *
 	/* 沒有寬度，不考慮批次 */
 	if (inBatchNumWidth > 0)
 	{
-		/* "%s%06lu%s" */
+		/* "%s%06ld%s" */
 		memset(szSprintfArgument, 0x00, sizeof(szSprintfArgument));
 		sprintf(szSprintfArgument, "%s%d%s", "%s%0", inBatchNumWidth, "ld%s");
 	}
@@ -27172,7 +27173,7 @@ int inFunc_DuplicateCheck(TRANSACTION_OBJECT* pobTran)
 		    pobTran->inTransactionCode == _CUP_SALE_		||
 		    pobTran->inTransactionCode == _REDEEM_ADJUST_	||
 		    pobTran->inTransactionCode == _INST_ADJUST_)
-		{           //不懂 gszDuplicatePAN值從哪來
+		{          
 			if (!memcmp(gszDuplicatePAN, pobTran->srBRec.szPAN, strlen(pobTran->srBRec.szPAN)))
 			{
 				DISPLAY_OBJECT	srDispMsgObj;
@@ -30975,7 +30976,7 @@ int inFunc_Check_Batch_limit(TRANSACTION_OBJECT *pobTran)
                 vdUtility_SYSFIN_LogMessage(AT, "inFunc_Check_Batch_limit Not cus_076 END!");
                 return (inRetVal);
 	}
-        /*判斷金額上限*/
+        /* 判斷單筆金額上限*/
         // 單筆檢核
         inRetVal = inFunc_Check_Single_Trade(pobTran);
         

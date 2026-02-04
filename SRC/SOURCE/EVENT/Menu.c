@@ -3079,7 +3079,7 @@ Describe        :
 int inMENU_VOID(EventMenuItem *srEventMenuItem)
 {
 	int	inRetVal = VS_SUCCESS;
-	
+	/*loadRecord後，判斷交易功能參數的_VOID_功能是否有開啟*/
 	if (inNCCC_Func_Check_Transaction_Function(_VOID_) != VS_SUCCESS)
 	{
 		inRetVal = VS_FUNC_CLOSE_ERR;
@@ -7494,7 +7494,7 @@ int inMENU_Check_Transaction_Enable(int inCode)
 	unsigned char	uszTxnEnable = VS_TRUE;
 	
 	memset(szFunEnable, 0x00, sizeof(szFunEnable));
-	inGetTMSOK(szFunEnable);
+	inGetTMSOK(szFunEnable);/* TMS下載是否成功，該參數值為(Y/N)，預設為N */
 	
 	/* 沒下TMS */
 	if (memcmp(&szFunEnable[0], "Y", 1) != 0)
@@ -8891,7 +8891,7 @@ int inMENU_NEWUI_TRANSACTION_MENU(EventMenuItem *srEventMenuItem)
 	
 	memset(szCustomerIndicator, 0x00 , sizeof(szCustomerIndicator));
 	inGetCustomIndicator(szCustomerIndicator);
-	
+	/*TMS下載失敗， return VS_FUNC_CLOSE_ERR*/
 	if (inMENU_Check_Transaction_Enable(0) != VS_SUCCESS)
 	{
 		inRetVal = VS_FUNC_CLOSE_ERR;

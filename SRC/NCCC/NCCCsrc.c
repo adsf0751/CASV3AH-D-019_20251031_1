@@ -8062,7 +8062,7 @@ int inNCCC_Func_Sync_InvoiceNumber(TRANSACTION_OBJECT *pobTran)
 	
 	memset(szInvoiceNumMax, 0x00, sizeof(szInvoiceNumMax));
 	sprintf (szInvoiceNumMax, "%06d", inMax_InvoiceNum);
-	
+	/*找到三個主機的Invoice Num ，讓三個Invoice Num同步最大的那個值*/
 	if (inMax_InvoiceNum > atoi(szInvoiceNumNCCC))
 	{
 		if (inLoadHDPTRec(inNCCC_HostIndex) != VS_SUCCESS)

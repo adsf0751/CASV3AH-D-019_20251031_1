@@ -220,14 +220,19 @@ int inCARD_unPackCard(TRANSACTION_OBJECT *pobTran)
 	memset(pobTran->srBRec.szPAN, 0x00, sizeof(pobTran->srBRec.szPAN));
 	memset(pobTran->srBRec.szExpDate, 0x00, sizeof(pobTran->srBRec.szExpDate));
 	memset(pobTran->srBRec.szCardHolder, 0x00, sizeof(pobTran->srBRec.szCardHolder));
-
+        /* 從inEMV_GetEMVCardData 設定inChipStatus == _EMV_CARD_ */
         if (pobTran->srBRec.inChipStatus == _EMV_CARD_)
         {
                 /* 抓Track2 Data */
                 usTagLen = sizeof(uszValue);
                 memset(uszValue, 0x00, sizeof(uszValue));
-                //從emv中取得某個tag的value
-                inEMV_Get_Tag_Value(0x57, &usTagLen, uszValue);
+                
+                /*
+                 * 參考文件:EMV\Contact\L2LIBAP_API(High Level)[Recommended]\EMVL2 Application Library Reference Manual v1.24
+                 * EMV TAG                                  Value       Description
+                 * d_TAG_TRACK2_EQUIVALENT_DATA             0x0057      Track2 Equivalent Data
+                 */
+                inEMV_Get_Tag_Value(0x57, &usTagLen, uszValue);//從emv中取得某個tag的value
                 memset(szTagVal, 0x00, sizeof(szTagVal));
                 inFunc_BCD_to_ASCII(szTagVal, uszValue, usTagLen);
 
