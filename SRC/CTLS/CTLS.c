@@ -1205,7 +1205,7 @@ int inCTLS_UnPackReadyForSale_Internal(TRANSACTION_OBJECT *pobTran)
 			inLoadHDPTRec(pobTran->srBRec.inHDTIndex);
 
 			pobTran->srBRec.uszCUPTransBit = VS_TRUE;
-
+                        /* 這邊看起來是檢查KEY是否存在 */
 			/* 確認是銀聯卡，檢查是否已做安全認證 */
 			/* 有開CUP且MACEnable有開但安全認證沒過，不能執行CUP交易 */
 			if (inKMS_CheckKey(_TWK_KEYSET_NCCC_, _TWK_KEYINDEX_NCCC_MAC_) != VS_SUCCESS)
@@ -1239,8 +1239,8 @@ int inCTLS_UnPackReadyForSale_Internal(TRANSACTION_OBJECT *pobTran)
                         
                         return (VS_ERROR);
         }
-	
-	/* 將CTLSobj的schemID轉存到PobTran */
+        /* srCtlsObj.uszSchemeID[0] = 0X91 */	
+	/* 將CTLSobj的schemID轉存到PobTran */ 
 	pobTran->srBRec.uszWAVESchemeID = srCtlsObj.uszSchemeID[0];
 	
 	if (ginDebug == VS_TRUE)
@@ -1251,7 +1251,7 @@ int inCTLS_UnPackReadyForSale_Internal(TRANSACTION_OBJECT *pobTran)
 	}
 	
         if ((pobTran->srBRec.uszWAVESchemeID != SCHEME_ID_17_WAVE3) && (pobTran->srBRec.uszWAVESchemeID != SCHEME_ID_16_WAVE1))
-        {
+        {       /*抓track2的資料 */
                 memset(szASCII, 0x00, sizeof(szASCII));
                 inFunc_BCD_to_ASCII(&szASCII[0], &szRCDataEx.baTrack2Data[0], szRCDataEx.bTrack2Len * 2);
                 szRCDataEx.bTrack2Len = szRCDataEx.bTrack2Len * 2;
@@ -1342,7 +1342,7 @@ int inCTLS_UnPackReadyForSale_Internal(TRANSACTION_OBJECT *pobTran)
 	
         /* 取卡號有效期 */
 	if (strlen(pobTran->szTrack2) > 0)
-	{
+	{       /*取得PAN、ExpDate、szServiceCode 、CardHolder*/
 		inRetVal = inCARD_unPackCard(pobTran);
 		if (inRetVal != VS_SUCCESS)
 		    return (VS_ERROR);
@@ -1351,7 +1351,7 @@ int inCTLS_UnPackReadyForSale_Internal(TRANSACTION_OBJECT *pobTran)
 	{
 		return (VS_ERROR);
 	}
-        
+        /*拆解TagID組EMV Record，目前只看到幾個TagID有在電文出現，其餘要詢問參考文件*/
         /* 組電文的EMV Data */
         inRetVal = inCTLS_ProcessChipData(pobTran);
         
@@ -2868,7 +2868,11 @@ int inCTLS_ProcessChipData(TRANSACTION_OBJECT *pobTran)
                         i = 2; /* 第二圈 */
                 }
         } while ((uszChipFlag == VS_TRUE) || (uszAdditionalFlag == VS_TRUE));
-        
+        /*
+         電文:Tag ID   Tag Name                     Fixed Values
+                5F2A : Transaction currency code    0x09 0x01
+                9F1A : Terminal country code        0x01 0x58 
+         */
         if (uszTag5F2A == VS_TRUE && uszTag9F1A == VS_TRUE)
 	{
 		/* 表示是以本國貨幣交易 */
@@ -2880,7 +2884,7 @@ int inCTLS_ProcessChipData(TRANSACTION_OBJECT *pobTran)
 	
 	/* Serial Number自己塞 */
 	if (pobTran->srEMVRec.in9F1E_IFDNumLen == 0)
-	{
+	{       /*取得終端機出廠序號*/
 		memset(szSerialNumber, 0x00, sizeof(szSerialNumber));
 		inFunc_GetSeriaNumber(szSerialNumber);
 
@@ -6217,12 +6221,12 @@ int inCTLS_Decide_Display_Image(TRANSACTION_OBJECT *pobTran)
 	inDISP_ClearAll();
 	
 	memset(szFunEnable, 0x00, sizeof(szFunEnable));
-	inGetStore_Stub_CardNo_Truncate_Enable(szFunEnable);'Y'
+	inGetStore_Stub_CardNo_Truncate_Enable(szFunEnable);//'Y'
 	memset(szCustomerIndicator,0x00, sizeof(szCustomerIndicator));
-	inGetCustomIndicator(szCustomerIndicator);'000'
+	inGetCustomIndicator(szCustomerIndicator);//'000'
 	/* 【需求單 - 108128】	於收銀機連線交易或單機操作時，端末設備螢幕所提示「銀聯卡 請按HOTKEY」、「電子票證 按HOTKEY」之「HOTKEY」字樣 by Russell 2019/8/21 上午 10:54 */
 	memset(szCUPEnable, 0x00, sizeof(szCUPEnable));
-	inGetCUPFuncEnable(szCUPEnable);'N'
+	inGetCUPFuncEnable(szCUPEnable);//'N'
 	if (memcmp(szCUPEnable, "Y", strlen("Y")) == 0)
 	{
 		uszCUPEnable = VS_TRUE;

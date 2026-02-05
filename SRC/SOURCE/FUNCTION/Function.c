@@ -17452,6 +17452,7 @@ int inFunc_GetSeriaNumber(char* szSerialNumber)
 	unsigned char	uszTemplate[16 + 1] = {0};
 	
 	memset(uszTemplate, 0x00, sizeof(uszTemplate));
+        /*取得終端機出廠序號。它與貼在終端機背面的標籤一致。*/
 	/* The last digit is the check code of factory serial number. The check code is calculated by exclusive-OR (XOR) the first 15 digits. */
 	inRetVal = CTOS_GetFactorySN(uszTemplate);
 	if (inRetVal != d_OK)

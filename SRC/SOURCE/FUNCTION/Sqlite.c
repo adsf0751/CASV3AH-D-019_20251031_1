@@ -1710,6 +1710,8 @@ Function        :inSqlite_Get_Batch_ByInvNum
 Date&Time       :2016/4/12 下午 2:53
 Describe        :利用調閱標號來將該筆資料全塞回pobTran中的BRec、會取最新狀態(如取消、調帳)
 */
+
+/* srALL 的sqliteTable的pTagValue 會是call by reference，所以在binding資料回srALL才有辦法動態更改prob的資料  */
 int inSqlite_Get_Batch_ByInvNum(TRANSACTION_OBJECT *pobTran, char* szTableName, int inInvoiceNumber)
 {
 	int			inRetVal = VS_SUCCESS;
@@ -8128,9 +8130,9 @@ int inSqlite_Update_ByInvNum_SignState(TRANSACTION_OBJECT * pobTran, char* szDBP
 	
 	/* 算要配置多少記憶體 */
 	memset(&srSQLCal, 0x00, sizeof(SQLITE_SQL_CALCULATE_TABLE));
-	srSQLCal.pSqlPrefix = szSqlPrefix;
-	srSQLCal.pSqlSuffix = szSqlSuffix;
-	srSQLCal.pSqlSuffix2 = szSqlSuffix2;
+	srSQLCal.pSqlPrefix = szSqlPrefix;//UPDATE tableName
+	srSQLCal.pSqlSuffix = szSqlSuffix;//SET 
+	srSQLCal.pSqlSuffix2 = szSqlSuffix2;//WHERE CONDITION
 	
 	inSqlite_Calculate_Update_SQLLength(&srSQLCal, &srAll, &inSqlLength);
 	

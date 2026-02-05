@@ -7371,7 +7371,7 @@ int inBATCH_FuncUserChoice_By_Sqlite(TRANSACTION_OBJECT *pobTran)
 		{
 			/* 如果lnOrgInvNum有值，就不需要做輸入的動作(ECR發動) */
 			if (pobTran->srBRec.lnOrgInvNum == 0)
-			{
+			{           /* inBATCH_GetInvoiceNumber 使用這手輸調閱碼 */
 				if (inBATCH_GetInvoiceNumber(pobTran) == VS_ERROR)
 				{
 					inRetVal = VS_ERROR;
