@@ -11609,6 +11609,10 @@ int inFunc_DeleteBatch(TRANSACTION_OBJECT *pobTran)
 		}
 		
 		/* ESC暫存檔 */
+                /* 分流:
+                 * 在inSqlite_Drop_Table_Flow 會用到 uszFileNameNoNeedNumBit ，
+                 * 在inSqlite_Drop_Table_Flow > inFunc_ComposeFileName 會用到uszFileNameNoNeedHostBit
+                 */
 		pobTranTemp.uszFileNameNoNeedHostBit = VS_TRUE;
 		pobTranTemp.uszFileNameNoNeedNumBit = VS_TRUE;
 		inSqlite_Drop_Table_Flow(&pobTranTemp, _TN_BATCH_TABLE_ESC_TEMP_);
@@ -11625,8 +11629,8 @@ int inFunc_DeleteBatch(TRANSACTION_OBJECT *pobTran)
 	/* 特例處理 END */
 	
 	/* 關閉Settle Bit */
-	inSetMustSettleBit("N");
-	inSaveHDPTRec(pobTranTemp.srBRec.inHDTIndex);
+        inSetMustSettleBit("N");
+        inSaveHDPTRec(pobTranTemp.srBRec.inHDTIndex);
 	
 	/* 關閉續傳 Bit */
 	inSetCLS_SettleBit("N");

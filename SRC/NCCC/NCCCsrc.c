@@ -4838,10 +4838,10 @@ int inNCCC_Func_VOID_Confirm(TRANSACTION_OBJECT *pobTran)
 	/* 暫時放這裡 */
 	if (inRetVal == VS_SUCCESS)
 	{
-		pobTran->uszUpdateBatchBit = VS_TRUE;
-		pobTran->srBRec.uszVOIDBit = VS_TRUE;
-		pobTran->srBRec.inOrgCode = pobTran->srBRec.inCode;
-		pobTran->srBRec.inCode = pobTran->inTransactionCode;
+            pobTran->uszUpdateBatchBit = VS_TRUE;
+            pobTran->srBRec.uszVOIDBit = VS_TRUE;
+            pobTran->srBRec.inOrgCode = pobTran->srBRec.inCode;
+            pobTran->srBRec.inCode = pobTran->inTransactionCode;
 	}
 	else
 	{
@@ -5257,7 +5257,6 @@ Function        :inNCCC_Func_Must_SETTLE
 Date&Time       :2015/10/22 下午 04:00
 Describe        :確認是否要先結帳
 */
-//不懂這邊load多次HDPT.dat用意
 int inNCCC_Func_Must_SETTLE(TRANSACTION_OBJECT *pobTran)
 {
 	int	inNCCC_HostIndex;
@@ -28824,7 +28823,7 @@ int inNCCC_Func_Delete_Signature_By_Shell_Command(char* szDirPath, char* szHostN
 {
         int     inRetVal = VS_SUCCESS;
         char    szCommand[512 + 1] = {0};
-        
+        /*find 指令在指定目錄中搜尋符合條件的 BMP 圖檔，並將其刪除。*/
         memset(szCommand, 0x00, sizeof(szCommand));
         snprintf(szCommand, sizeof(szCommand), "find %s -type f -regex '.*/%s[0-9]\\{6\\}\\(_[0-9]\\)?\\.bmp' -exec rm -f {} +", szDirPath, szHostName);
         inRetVal = inFunc_ShellCommand_System(szCommand);
