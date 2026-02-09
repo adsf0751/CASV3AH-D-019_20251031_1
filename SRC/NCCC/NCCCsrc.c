@@ -13391,7 +13391,7 @@ int inNCCC_Func_BuildAndSendPacket_Flow(TRANSACTION_OBJECT *pobTran)
 	inGetTRTFileName(szTRTFileName);
 	
 	memset(szFesMode, 0x00, sizeof(szFesMode));
-	inGetNCCCFESMode(szFesMode);
+	inGetNCCCFESMode(szFesMode);//ATS
 	memset(szCFESMode, 0x00, sizeof(szCFESMode));
 	inGetCloud_MFES(szCFESMode);//'N'
 
@@ -29043,7 +29043,7 @@ int inNCCC_Func_Create_Settlement_XML_NCCC(TRANSACTION_OBJECT * pobTran)
 		/* _SETTLENMENT_RECOVER_XML_TAG_FUNCTION_UPDATE_BATCH_NUM_ */
 		xmlNewChild(srRoot_Node, NULL, BAD_CAST _SETTLENMENT_RECOVER_XML_TAG_FUNCTION_UPDATE_BATCH_NUM_, BAD_CAST "N");
 	}
-	
+	// 將 XML 文件依指定編碼與格式寫入檔案
         inXML_SaveFile(szFileName, &srDoc, "utf-8", 1);
 	
 	/* 清空佔用記憶體 */
@@ -29341,7 +29341,8 @@ int inNCCC_Func_Settlement_XML_Edit(char* szEditTag, char* szEditVal)
         srTargetNode.parent = &srTargetParentNode;
 	
         if (&srTargetNode != NULL)
-        {
+        {   
+                
                 inXML_Edit_Properties(_AP_ROOT_PATH_, szFileName, &srTargetNode, szEditVal);
                 sync();
         }

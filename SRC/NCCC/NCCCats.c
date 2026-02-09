@@ -901,6 +901,7 @@ int inNCCC_ATS_Func_BuildAndSendPacket(TRANSACTION_OBJECT *pobTran)
 		if (pobTran->inTransactionCode == _SETTLE_)
 		{
 			/* 如果是結帳交易，要把請先結帳的Bit On起來，直到接收到host的回覆才Off*/
+                        /*取得有效交易的筆數*/
 			inBatchCnt = inBATCH_GetTotalCountFromBakFile_By_Sqlite(pobTran);
 			if (inBatchCnt >= 0)
 			{
