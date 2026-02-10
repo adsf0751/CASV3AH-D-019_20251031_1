@@ -904,7 +904,7 @@ int inNCCC_ATS_Func_BuildAndSendPacket(TRANSACTION_OBJECT *pobTran)
                         /*取得有效交易的筆數*/
 			inBatchCnt = inBATCH_GetTotalCountFromBakFile_By_Sqlite(pobTran);
 			if (inBatchCnt >= 0)
-			{
+			{       /* 設定HDPT的是否結帳功能為"Y" */
 				inNCCC_ATS_SetMustSettleBit(pobTran, "Y");
 			}
 			else
@@ -971,7 +971,11 @@ int inNCCC_ATS_Func_BuildAndSendPacket(TRANSACTION_OBJECT *pobTran)
 			{
 				inFunc_RecordTime_Append("%d %s", __LINE__, __FUNCTION__);
 			}
-			
+			/*
+                            因為srHDPTRec.szSendReversalBit為 N ，
+                            inNCCC_ATS_Func_SetTxnOnlineOffline會設定pobTran->uszReversalBit = false，
+                            基本上inNCCC_ATS_ProcessReversal不做事
+                         */
 			/* 步驟 1.3 檢查是否為 Online 交易，先送上筆交易失敗的 Reversal 及產生當筆交易 Reversal */
 			if ((inRetVal = inNCCC_ATS_ProcessReversal(pobTran)) != VS_SUCCESS)
 			{
