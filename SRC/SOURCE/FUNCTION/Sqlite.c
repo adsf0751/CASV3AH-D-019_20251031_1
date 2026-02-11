@@ -1450,6 +1450,7 @@ int inSqlite_Get_Table_Count_Flow(TRANSACTION_OBJECT *pobTran, int inTableType, 
 	
 	/* 由function決定TableName */
 	memset(szTableName, 0x00, sizeof(szTableName));
+        /*可以從暫存table的部份看到這個Bit的設定*/
 	if (pobTran->uszFileNameNoNeedNumBit == VS_TRUE)
 	{
 		inFunc_ComposeFileName(pobTran, szTableName, "", 0);

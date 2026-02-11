@@ -14227,6 +14227,7 @@ int inFunc_Data_GZip(char* szParameter, char *szFileName, char* szSource)
 	}
 	
 	/* 執行命令 */
+        /* 開/讀檔案但讀出來資料沒做使用，是確認檔案是否存在，且可讀? */
         inRetVal = inFunc_ShellCommand_Popen(szCommand, VS_FALSE);
 	if (inRetVal != VS_SUCCESS)
 	{

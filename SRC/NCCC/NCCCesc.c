@@ -5258,7 +5258,11 @@ int inNCCC_ESC_ProcessOnline(TRANSACTION_OBJECT *pobTran, int inType)
 
 	/* 如果是Idel或Settle 就把之前again table資料讀出來 */
 	if (inType == _ESC_UPLOAD_IDLE_ || inType == _ESC_UPLOAD_SETTLE_)
-        {
+        {       /*
+                 * 從不同的 batch table 裡查詢資料，
+                 * 然後取出 query 結果中 inTableID 最小的那一筆，
+                 * 更新prob.srBRec 和prob.srEMVRec
+                 */
 		inRetVal = inNCCC_ESC_Get_Again_Record_Most_TOP(pobTran);
 		if (inRetVal != VS_SUCCESS)
 		{
@@ -5269,6 +5273,7 @@ int inNCCC_ESC_ProcessOnline(TRANSACTION_OBJECT *pobTran, int inType)
 	/* 組簽單要原本的HDT */
         inLoadHDTRec(pobTran->srBRec.inHDTIndex);
 	/* 組上傳簽單 */
+        /*把組出來的data寫入ESC_E1.txt檔案*/
 	if (inNCCC_ESC_Make_E1Data(pobTran) != VS_SUCCESS)
 	{
 		vdUtility_SYSFIN_LogMessage(AT, "inNCCC_ESC_ProcessOnline inNCCC_ESC_Make_E1Data failed");
@@ -5292,7 +5297,7 @@ int inNCCC_ESC_ProcessOnline(TRANSACTION_OBJECT *pobTran, int inType)
 	{
 		memset(&ESC_UPLOAD_DATA[i], 0x00, sizeof(ESC_UPLOAD_DATA[i]));
 	}
-	
+	/* inNCCC_ESC_Data_Packet 會去set global的ESC_UPLOAD_DATA[index]的資料 */
 	/* 以下會分解ESC_UPLOAD_RECEIPT and ESC_UPLOAD_BMP 到 ESC_UPLOAD_DATA並取得總上傳次數inEscDataIndex */
 	/* 簽單 Append E1 */
 	if (inNCCC_ESC_Data_Packet(_ESC_FILE_RECEIPT_GZ_ENCRYPTED_, _TABLE_E1_) != VS_SUCCESS)
@@ -5746,8 +5751,8 @@ int inNCCC_ESC_Data_Compress_Encryption(TRANSACTION_OBJECT *pobTran)
 	
 	if (ginDebug == VS_TRUE)
                 inLogPrintf(AT, "inNCCC_ESC_Data_Compress_Encryption() START!");
-	
-	/* 抓tSAM Slot */
+	/* uszSlot = _SAM_SLOT_1_;*/
+	/* 抓tSAM Slot */ 
 	inRetVal = inNCCC_tSAM_Decide_tSAM_Slot(&uszSlot);
 	if (inRetVal != VS_SUCCESS)
 	{
@@ -6452,20 +6457,18 @@ int inNCCC_ESC_Get_Again_Record_Most_TOP(TRANSACTION_OBJECT *pobTran)
 		inLogPrintf(AT, "----------------------------------------");
 		inLogPrintf(AT, "inNCCC_ESC_Get_Again_Record_Most_TOP() START !");
 	}
-	/*
-            取prob.srBRec的一筆Record
-         */
+	/* prob.srBRec 主要是更新 query 查出來inTableID 最小的那一筆 */
 	inRetVal = inSqlite_ESC_Get_BRec_Top_Flow(pobTran, _TN_BATCH_TABLE_ESC_AGAIN_);
 	if (inRetVal != VS_SUCCESS)
 	{
 		vdUtility_SYSFIN_LogMessage(AT, "inNCCC_ESC_Get_Again_Record_Most_TOP _TN_BATCH_TABLE_ESC_AGAIN_Get_BRec_TOP failed");
 		return (inRetVal);
 	}
-	/*上述抓到那筆rowId去抓prob.srEMVRec Record*/
+	
 	if (pobTran->srBRec.inChipStatus != 0			|| 
 	    pobTran->srBRec.uszContactlessBit == VS_TRUE	|| 
 	    pobTran->srBRec.uszEMVFallBackBit == VS_TRUE)
-	{
+	{       /* prob.srEMVRec 主要是更新 query 查出來inTableID 最小的那一筆 */
 		inRetVal = inSqlite_ESC_Get_BRec_Top_Flow(pobTran, _TN_BATCH_TABLE_ESC_AGAIN_EMV_);
 		if (inRetVal != VS_SUCCESS)
 		{
