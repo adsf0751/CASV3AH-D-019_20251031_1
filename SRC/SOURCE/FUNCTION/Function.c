@@ -2120,7 +2120,7 @@ int inFunc_GetCardFields_CTLS(TRANSACTION_OBJECT *pobTran)
 	memset(szCustomerIndicator, 0x00, sizeof(szCustomerIndicator));
 	inGetCustomIndicator(szCustomerIndicator);//'000'
 	
-	
+	//pobTran->srBRec.uszUnyTransBit在ECR程式有設定，可能有關
 	if (pobTran->srBRec.uszUnyTransBit == VS_TRUE)
 	{
 		inFunc_Find_Specific_HDTindex(pobTran->srBRec.inHDTIndex, _HOST_NAME_CREDIT_NCCC_, &pobTran->srBRec.inHDTIndex);
@@ -2141,6 +2141,7 @@ int inFunc_GetCardFields_CTLS(TRANSACTION_OBJECT *pobTran)
                 
 		return (VS_SUCCESS);
 	}
+        //pobTran->srBRec.uszCUPEMVQRCodeBit在ECR程式有設定，可能有關
         else if (pobTran->srBRec.uszCUPEMVQRCodeBit == VS_TRUE)
         {
 		/* 取卡號有效期 */

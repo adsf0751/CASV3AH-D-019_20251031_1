@@ -136,6 +136,10 @@ int inCREDIT_Func_Get_OPT_Amount(TRANSACTION_OBJECT *pobTran)
 	if (ginEventCode >= '1' && ginEventCode <= '9')
         {
 		/* 若ECR或idle有輸入金額就跳走，OPT已經輸入過 */
+                /*
+                 * inMENU_ECR()會設定srEventMenuItem->uszECRBit = VS_TRUE; 
+                 * pobTran.uszECRBit = srEventMenuItem.uszECRBit;
+                 */
 		if (pobTran->uszECRBit == VS_TRUE)
 		{
 			if (pobTran->srBRec.lnTxnAmount > 0)
@@ -144,6 +148,7 @@ int inCREDIT_Func_Get_OPT_Amount(TRANSACTION_OBJECT *pobTran)
 			}
                         
 			/* 兩段式收銀機連線 第一段不輸入 這邊只擋會出現在OPT的 */
+                        /*pobTran->uszCardInquiryFirstBit 應該跟ECR的程式有關，unpack時候檢查*/
 			if (pobTran->uszCardInquiryFirstBit == VS_TRUE)
 			{
 				return (VS_SUCCESS);

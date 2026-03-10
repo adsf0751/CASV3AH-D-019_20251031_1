@@ -5427,6 +5427,12 @@ Function	:inDISP_LogPrintf
 Date&Time	:2016/11/30 下午 5:43
 Describe	:Debug Printf
 */
+/*
+ * printf:
+ * 當前端末機系統時間 inFunc_GetSystemDateAndTime、
+ * 所呼叫inLogPrintf這支程式的function名稱和所在第幾行  printf("%s", szlocation)、
+ * 依照 format string 將 va_list 的參數格式化成字串 vsprintf(szDebugMsg, szStr, list) 
+ */
 int inLogPrintf(char* szlocation, char *szStr, ...)
 {
 	char		szTemplate[50 + 1] = {0};
