@@ -10534,6 +10534,7 @@ int inNCCC_DCC_CHECK(TRANSACTION_OBJECT *pobTran)
 		/* 結帳不用檢核這些 */
 		if (pobTran->inTransactionCode != _SETTLE_)
 		{
+                        /* inNCCC_DCC_Already_Have_Parameter會找各個.dat檔案，如果找到其中一個檔案不存在就跳出，return VS_FALSE */
 			/* 沒有DCC舊參數，擋下來(當TMS排程下載(參數或AP)成功，但DCC參數下載失敗時，所有交易直接以台幣進行支付，連動結帳時DCC以0元進行結帳) */
 			if (inNCCC_DCC_Already_Have_Parameter(pobTran) != VS_TRUE)
 			{
