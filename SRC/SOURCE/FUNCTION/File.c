@@ -1284,7 +1284,7 @@ int inFile_Linux_Get_FileSize_By_Stat(char* szPath, int* inFileSize)
 {
 	int		inRetVal = -1;
 	struct stat	srStatBuf = {0};
-	
+	/* 呼叫stat取得檔案的資訊(srStatBuf) */
 	inRetVal = stat(szPath, &srStatBuf);
 	
 	if (inRetVal == -1)

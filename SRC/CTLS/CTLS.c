@@ -841,7 +841,11 @@ unsigned long ulCTLS_CheckResponseCode_SALE(TRANSACTION_OBJECT *pobTran)
 		/* d_EMVCL_RC_DATA 和 d_EMVCL_NON_EMV_CARD 為有收到資料的狀況 */
                 case d_EMVCL_RC_DATA :
                         pobTran->srBRec.uszContactlessBit = VS_TRUE;
-    /*inCTLS_UnPackReadyForSale_Flow 在UnPack會透過schemeID 設定pobTran->srBRec.uszCUPTransBit BitOn*/
+    /*
+     * inCTLS_UnPackReadyForSale_Flow 在UnPack會透過schemeID，
+     * 設定pobTran->srBRec.uszCUPTransBit BitOn，
+     * 設定免簽的BitOn也在這支function
+     */
                         if (inCTLS_UnPackReadyForSale_Flow(pobTran) != VS_SUCCESS)
 			{
 				ulRetVal = d_EMVCL_RC_FAILURE;

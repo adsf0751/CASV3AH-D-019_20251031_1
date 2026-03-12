@@ -9355,6 +9355,7 @@ Function        :inNCCC_Func_CheckSpecialCard
 Date&Time       :2017/5/22 下午 1:47
 Describe        :return VS_Success代表符合該活動代碼
 */
+/* 找到符合活動代碼的SCDTRec， 判斷卡別範圍、交易金額是否在活動限額內，以及活動日期是否在範圍內。 */
 int inNCCC_Func_CheckSpecialCard(TRANSACTION_OBJECT *pobTran, char* szCampaignNumber)
 {
 	int		inRetVal = VS_ERROR;

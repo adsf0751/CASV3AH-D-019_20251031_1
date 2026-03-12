@@ -612,6 +612,18 @@ Function        :inCARD_ValidTrack2_PAN
 Date&Time       :2016/12/15 下午 3:43
 Describe        :
 */
+/*
+ 一、Luhn 演算法原理
+信用卡號最後一位是 檢查碼（Check Digit）。
+透過前面的數字計算出來，用來驗證輸入是否錯誤。
+
+基本規則：
+    1.從 右邊開始（不包含最後一位）
+    2.每隔一位數字乘以 2
+    3.如果結果 大於 9，就減 9
+    4.把所有數字加總
+    5.總和 + 最後一位 必須是 10 的倍數
+ */
 int inCARD_ValidTrack2_PAN(TRANSACTION_OBJECT * pobTran)
 {
         int     i;

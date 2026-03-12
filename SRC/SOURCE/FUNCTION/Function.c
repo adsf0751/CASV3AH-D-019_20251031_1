@@ -2617,6 +2617,7 @@ int inFunc_GetCardFields_CTLS(TRANSACTION_OBJECT *pobTran)
                         else if (ulCTLS_RetVal == d_EMVCL_RC_DATA)
                         {
 				/* 判斷card bin 讀HDT */
+                                /*取得CDT.dat的高低卡號範圍，並判斷srRec的卡號是否在範圍內*/
 				if (inCARD_GetBin(pobTran) != VS_SUCCESS)
 				{
 					vdUtility_SYSFIN_LogMessage(AT, "inFunc_GetCardFields_CTLS inCARD_GetBin failed");
@@ -2629,7 +2630,8 @@ int inFunc_GetCardFields_CTLS(TRANSACTION_OBJECT *pobTran)
 				if (memcmp(szFuncEnable, "Y", strlen("Y")) == 0)
 				{
 					/* (需求單 - 106349)移除原U CARD邏輯判斷 2018/10/31 下午 3:41 by Russell */
-					if (inCARD_ValidTrack2_PAN(pobTran) != VS_SUCCESS)
+					/* 判斷卡號是否有效 */
+                                        if (inCARD_ValidTrack2_PAN(pobTran) != VS_SUCCESS)
 					{
 						vdUtility_SYSFIN_LogMessage(AT, "inFunc_GetCardFields_CTLS inCARD_ValidTrack2_PAN failed");
 						return (VS_CARD_PAN_ERROR);
@@ -2637,6 +2639,7 @@ int inFunc_GetCardFields_CTLS(TRANSACTION_OBJECT *pobTran)
 				}
 
 				/* 檢核ExpDate */
+                                /*檢查卡號的有效期是否過期*/
 				if (inCARD_ValidTrack2_ExpDate(pobTran) != VS_SUCCESS)
                                 {
                                         vdUtility_SYSFIN_LogMessage(AT, "inFunc_GetCardFields_CTLS inCARD_ValidTrack2_ExpDate failed");
@@ -27147,7 +27150,7 @@ Function        :inFunc_DuplicateCheck
 Date&Time       :2017/3/30 下午 4:23
 Describe        :檢核是否重複刷卡
 */
-//Split_Transaction_Check_Enable='N'，不可連續刷卡檢核，如果功能有開，
+//Split_Transaction_Check_Enable='N'為不可連續刷卡檢核，如果功能有開，
 //再判斷交易類型相符情況下，卡號是否重複
 int inFunc_DuplicateCheck(TRANSACTION_OBJECT* pobTran)
 {
