@@ -925,7 +925,7 @@ Function        :inNCCC_Func_Get_Txn_Category
 Date&Time       :2025/2/26 下午 5:13
 Describe        :請輸入交易類型
 */
-/*不懂*/
+
 int inNCCC_Func_Get_Txn_Category(TRANSACTION_OBJECT *pobTran)
 {
 	int     inRetVal = VS_ERROR;
@@ -942,6 +942,7 @@ int inNCCC_Func_Get_Txn_Category(TRANSACTION_OBJECT *pobTran)
         
         memset(szCustomerIndicator, 0x00, sizeof(szCustomerIndicator));
         inGetCustomIndicator(szCustomerIndicator);
+        //客製化是_CUSTOMER_INDICATOR_126_MASTERCARD_FLIGHT_TICKET，會跳過if繼續往下執行
         if (memcmp(szCustomerIndicator, _CUSTOMER_INDICATOR_126_MASTERCARD_FLIGHT_TICKET_, _CUSTOMER_INDICATOR_SIZE_))
         {
                 if (ginDebug == VS_TRUE)
